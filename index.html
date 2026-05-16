@@ -407,6 +407,53 @@
       .photo-grid { grid-template-columns: 1fr; }
       .hero-cta { flex-direction: column; align-items: center; }
     }
+
+    /* FUN LETTERS */
+    .fun-letter { position: relative; display: inline-block; }
+    
+    .face {
+      position: absolute;
+      top: 0.1em;
+      right: -0.05em;
+      width: 0.18em;
+      height: 0.18em;
+      background: var(--ink);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+    }
+    
+    .eyes-container {
+      display: flex;
+      justify-content: space-between;
+      width: 50%;
+      margin: 0 auto;
+      transform: translateY(-10%); /* Look slightly up default */
+    }
+
+    .eye {
+      width: 35%;
+      aspect-ratio: 1;
+      background: var(--paper);
+      border-radius: 50%;
+      animation: blink 4s infinite;
+    }
+    
+    @keyframes blink {
+      0%, 96%, 98%, 100% { transform: scaleY(1); }
+      97%, 99% { transform: scaleY(0.1); }
+    }
+    
+    /* Playful character bounce */
+    .fun-letter.waving .face {
+      animation: face-jump 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) infinite alternate;
+    }
+    @keyframes face-jump {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-0.15em) scale(1.1); }
+    }
   </style>
 </head>
 <body>
@@ -427,7 +474,10 @@
   <section class="hero" id="hero">
     <div class="hero-content fade-in">
       <p class="hero-greeting">Hello, I'm</p>
-      <h1>Owen<br>Santiago</h1>
+      <h1>
+        <span class="fun-letter" data-letter="O">O<div class="face"><div class="eyes-container"><div class="eye"></div><div class="eye"></div></div></div></span>w<span class="fun-letter" data-letter="e">e<div class="face"><div class="eyes-container"><div class="eye"></div><div class="eye"></div></div></div></span>n<br>
+        S<span class="fun-letter" data-letter="a">a<div class="face"><div class="eyes-container"><div class="eye"></div><div class="eye"></div></div></div></span>nti<span class="fun-letter" data-letter="a">a<div class="face"><div class="eyes-container"><div class="eye"></div><div class="eye"></div></div></div></span><span class="fun-letter" data-letter="g">g<div class="face"><div class="eyes-container"><div class="eye"></div><div class="eye"></div></div></div></span><span class="fun-letter" data-letter="o">o<div class="face"><div class="eyes-container"><div class="eye"></div><div class="eye"></div></div></div></span>
+      </h1>
       <p class="hero-sub">Aspiring Radiologic Technician from Poulsbo, Washington</p>
       <div class="hero-cta">
         <a href="#works" class="filled">View My Work</a>
@@ -632,6 +682,35 @@
       });
     }, { threshold: 0.15 });
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Interactive Smiley Faces (Subtle eyes tracking)
+    document.addEventListener('mousemove', (e) => {
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
+      
+      document.querySelectorAll('.eyes-container').forEach(eyes => {
+        const rect = eyes.parentElement.getBoundingClientRect(); // Get letter position
+        const letterX = rect.left + rect.width / 2;
+        const letterY = rect.top + rect.height / 2;
+        
+        const angle = Math.atan2(mouseY - letterY, mouseX - letterX);
+        const distance = Math.min(2.5, Math.hypot(mouseX - letterX, mouseY - letterY) / 150); // Very subtle movement
+        
+        const moveX = Math.cos(angle) * distance;
+        const moveY = Math.sin(angle) * distance;
+        
+        eyes.style.transform = `translate(${moveX}px, ${moveY}px)`;
+      });
+    });
+
+    // Random waving (Letter tilt)
+    setInterval(() => {
+      const letters = document.querySelectorAll('.fun-letter');
+      if (letters.length === 0) return;
+      const randomLetter = letters[Math.floor(Math.random() * letters.length)];
+      randomLetter.classList.add('waving');
+      setTimeout(() => randomLetter.classList.remove('waving'), 1500);
+    }, 4500);
   </script>
 </body>
 </html>
