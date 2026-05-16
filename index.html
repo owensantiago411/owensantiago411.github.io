@@ -1,0 +1,525 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Owen Santiago</title>
+  <style>
+    :root {
+      --ink: #1a1a1a;
+      --paper: #f5f1eb;
+      --warm: #c8b89a;
+      --accent: #8b6f47;
+      --muted: #7a7267;
+      --light: #e8e2d8;
+      --white: #faf8f4;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(245, 241, 235, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--light);
+      transition: box-shadow 0.3s;
+    }
+    nav.scrolled { box-shadow: 0 1px 8px rgba(0,0,0,0.06); }
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-name {
+      font-size: 18px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 400;
+    }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--ink); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 32px 80px;
+      position: relative;
+    }
+    .hero-content { max-width: 700px; }
+    .hero-greeting {
+      font-size: 15px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(40px, 7vw, 72px);
+      font-weight: 400;
+      line-height: 1.1;
+      margin-bottom: 28px;
+      letter-spacing: -0.02em;
+    }
+    .hero-sub {
+      font-size: 18px;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 40px;
+    }
+    .hero-cta {
+      display: inline-flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .hero-cta a {
+      padding: 12px 28px;
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid var(--ink);
+      color: var(--ink);
+      transition: all 0.25s;
+    }
+    .hero-cta a:hover {
+      background: var(--ink);
+      color: var(--paper);
+    }
+    .hero-cta a.filled {
+      background: var(--ink);
+      color: var(--paper);
+    }
+    .hero-cta a.filled:hover {
+      background: transparent;
+      color: var(--ink);
+    }
+    .scroll-hint {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--warm);
+      animation: float 2.5s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* SECTIONS */
+    section { padding: 100px 32px; }
+    .section-inner { max-width: 900px; margin: 0 auto; }
+    .section-label {
+      font-size: 12px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--warm);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 32px;
+    }
+    .divider {
+      width: 48px;
+      height: 1px;
+      background: var(--warm);
+      margin: 40px 0;
+    }
+
+    /* ABOUT */
+    .about { background: var(--white); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: start;
+    }
+    .about-text p {
+      margin-bottom: 20px;
+      font-size: 16px;
+      color: #3a3530;
+    }
+    .about-text p:first-child::first-line {
+      font-variant: small-caps;
+      letter-spacing: 0.04em;
+    }
+    .about-image-placeholder {
+      aspect-ratio: 4/5;
+      background: var(--light);
+      border: 1px dashed var(--warm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 20px;
+    }
+
+    /* WORKS */
+    .works { background: var(--paper); }
+    .works-intro {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 600px;
+      margin-bottom: 60px;
+      font-style: italic;
+    }
+    .work-card {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 40px;
+      padding: 40px 0;
+      border-top: 1px solid var(--light);
+      align-items: start;
+    }
+    .work-card:last-child { border-bottom: 1px solid var(--light); }
+    .work-label {
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--warm);
+      padding-top: 4px;
+    }
+    .work-body h3 {
+      font-size: 22px;
+      font-weight: 400;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .work-body p {
+      font-size: 15px;
+      color: #5a5550;
+      margin-bottom: 12px;
+    }
+    .work-tag {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--warm);
+      padding: 4px 12px;
+      margin-right: 8px;
+      margin-top: 8px;
+    }
+    .work-link {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid var(--warm);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .work-link:hover { color: var(--ink); border-color: var(--ink); }
+
+    /* PHOTOGRAPHY */
+    .photo-section { background: var(--white); }
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 40px;
+    }
+    .photo-placeholder {
+      aspect-ratio: 1;
+      background: var(--light);
+      border: 1px dashed var(--warm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-align: center;
+      gap: 8px;
+      padding: 16px;
+    }
+    .photo-placeholder .photo-label-cat {
+      font-size: 16px;
+      font-style: italic;
+      text-transform: none;
+      letter-spacing: 0;
+      color: var(--accent);
+    }
+
+    /* CONTACT */
+    .contact {
+      background: var(--ink);
+      color: var(--paper);
+      text-align: center;
+      padding-bottom: 120px;
+    }
+    .contact .section-label { color: var(--warm); }
+    .contact .section-title { color: var(--paper); }
+    .contact-methods {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+    .contact-item {
+      text-align: center;
+    }
+    .contact-item-label {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--warm);
+      margin-bottom: 8px;
+    }
+    .contact-item a, .contact-item span {
+      color: var(--paper);
+      text-decoration: none;
+      font-size: 16px;
+      transition: color 0.2s;
+    }
+    .contact-item a:hover { color: var(--warm); }
+
+    /* FADE IN */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .work-card { grid-template-columns: 1fr; gap: 12px; }
+      .photo-grid { grid-template-columns: 1fr 1fr; }
+      .nav-inner { padding: 14px 20px; }
+      .nav-links { gap: 20px; }
+      .nav-links a { font-size: 12px; }
+      section { padding: 72px 24px; }
+      .contact-methods { gap: 36px; }
+    }
+    @media (max-width: 480px) {
+      .photo-grid { grid-template-columns: 1fr; }
+      .hero-cta { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav id="nav">
+    <div class="nav-inner">
+      <a class="nav-name" href="#hero">Owen Santiago</a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#works">Works</a></li>
+        <li><a href="#photos">Photos</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-content fade-in">
+      <p class="hero-greeting">Hello, I'm</p>
+      <h1>Owen<br>Santiago</h1>
+      <p class="hero-sub">Aspiring Radiologic Technician from Poulsbo, Washington</p>
+      <div class="hero-cta">
+        <a href="#works" class="filled">View My Work</a>
+        <a href="#contact">Get in Touch</a>
+      </div>
+    </div>
+    <span class="scroll-hint">&darr;</span>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="section-inner">
+      <div class="about-grid">
+        <div class="about-text fade-in">
+          <p class="section-label">About</p>
+          <h2 class="section-title">An Energetic Mind,<br>A Focused Purpose.</h2>
+          <p>Despite the challenges of ADHD, I put everything I've got into my work. Because if work isn't done well, then what's the point?</p>
+          <p>I'm a Filipino-American with a white mother from the South and an immigrant father from the Philippines who lived most of his life in California. Despite childhood challenges on both sides, my parents have given me great opportunities that I will use to better the world via MRI.</p>
+          <p>In my mind, every problem in my way isn't a boulder in my path, but rather a stepping stone to success. When I struggled to understand something in school, I just worked harder. In Intro to Anatomy &amp; Physiology at the local high school, I found learning tough. But I worked hard and made it work, and I ended up getting A's in both semesters. Perseverance &mdash; even when I have no background experience on the subject &mdash; is a superpower of mine.</p>
+          <p>Whatever I need to do, I will get done. I am extremely passionate about anything I do, and will work until whatever I do is as good as it can be.</p>
+        </div>
+        <div class="fade-in">
+          <div class="about-image-placeholder">Your photo here</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORKS -->
+  <section class="works" id="works">
+    <div class="section-inner">
+      <p class="section-label fade-in">Works</p>
+      <h2 class="section-title fade-in">A Jack-of-All-Trades</h2>
+      <p class="works-intro fade-in">Writing, argumentation, academic research, product ideation, photography, graphic design, and technical know-how. The best part? I love doing it.</p>
+
+      <div class="work-card fade-in">
+        <div class="work-label">Resume</div>
+        <div class="work-body">
+          <h3>Medical Resume</h3>
+          <p>Get to know my talents, and see what I can do for you. Updated January 2025.</p>
+          <span class="work-tag">Healthcare</span>
+          <span class="work-tag">Radiology</span>
+        </div>
+      </div>
+
+      <div class="work-card fade-in">
+        <div class="work-label">Essay &middot; 2023</div>
+        <div class="work-body">
+          <h3>First Place &mdash; Kitsap Bar Association's Law Day Competition</h3>
+          <p>In 10th grade, I won $350 for writing an essay on democracy. Even around three years ago, I had extraordinary writing talent.</p>
+          <span class="work-tag">Writing</span>
+          <span class="work-tag">Award Winner</span>
+        </div>
+      </div>
+
+      <div class="work-card fade-in">
+        <div class="work-label">Research Paper</div>
+        <div class="work-body">
+          <h3>The Effects of ADHD on Human Pathology</h3>
+          <p>Written for Intro to Anatomy &amp; Physiology, this project took months of research and proofreading. I was one of the few people in the class who turned in assignments on time &mdash; and I still got an A.</p>
+          <span class="work-tag">Research</span>
+          <span class="work-tag">Anatomy</span>
+        </div>
+      </div>
+
+      <div class="work-card fade-in">
+        <div class="work-label">Design &middot; 2023</div>
+        <div class="work-body">
+          <h3>North Kitsap High School Yearbook</h3>
+          <p>I have a strong love for design and writing, and nothing showcases it like this 2023 yearbook.</p>
+          <span class="work-tag">Graphic Design</span>
+          <span class="work-tag">Editorial</span>
+        </div>
+      </div>
+
+      <div class="work-card fade-in">
+        <div class="work-label">Video</div>
+        <div class="work-body">
+          <h3>YouTube Channel</h3>
+          <p>Photography. Technology. AI. All the interesting geeky nerd techy stuff &mdash; I'm here for it.</p>
+          <a class="work-link" href="https://www.youtube.com/@adhdboy411/featured" target="_blank" rel="noopener">Visit Channel &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHOTOGRAPHY -->
+  <section class="photo-section" id="photos">
+    <div class="section-inner">
+      <p class="section-label fade-in">Photography</p>
+      <h2 class="section-title fade-in">Every Story Deserves a Frame</h2>
+      <p class="works-intro fade-in">An avid photographer, I love capturing anything in the moment. Everything has a story, and a great photo can tell it.</p>
+      <div class="photo-grid fade-in">
+        <div class="photo-placeholder">
+          <span class="photo-label-cat">People</span>
+          <span>Your photo here</span>
+        </div>
+        <div class="photo-placeholder">
+          <span class="photo-label-cat">Nature</span>
+          <span>Your photo here</span>
+        </div>
+        <div class="photo-placeholder">
+          <span class="photo-label-cat">Objects</span>
+          <span>Your photo here</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="section-inner fade-in">
+      <p class="section-label">Contact</p>
+      <h2 class="section-title">Let's Connect</h2>
+      <div class="contact-methods">
+        <div class="contact-item">
+          <p class="contact-item-label">Email</p>
+          <a href="mailto:owencs411@gmail.com">owencs411@gmail.com</a>
+        </div>
+        <div class="contact-item">
+          <p class="contact-item-label">Phone</p>
+          <span>+1 360-621-3726</span>
+        </div>
+        <div class="contact-item">
+          <p class="contact-item-label">YouTube</p>
+          <a href="https://www.youtube.com/@adhdboy411" target="_blank" rel="noopener">@adhdboy411</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Nav shadow on scroll
+    window.addEventListener('scroll', () => {
+      document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // Fade in on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
