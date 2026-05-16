@@ -184,19 +184,23 @@
       font-variant: small-caps;
       letter-spacing: 0.04em;
     }
-    .about-image-placeholder {
-      aspect-ratio: 4/5;
+    .about-image {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      transition: transform 0.4s ease;
+    }
+    .about-image:hover {
+      transform: translateY(-8px);
+    }
+    .about-image img {
+      display: block;
+      width: 100%;
+      height: 600px;
+      object-fit: cover;
+      object-position: 50% 20%;
       background: var(--light);
-      border: 1px dashed var(--warm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      text-align: center;
-      padding: 20px;
     }
 
     /* WORKS */
@@ -247,49 +251,117 @@
       margin-top: 8px;
     }
     .work-link {
-      display: inline-block;
-      margin-top: 12px;
-      font-size: 13px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--accent);
-      text-decoration: none;
-      border-bottom: 1px solid var(--warm);
-      padding-bottom: 2px;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .work-link:hover { color: var(--ink); border-color: var(--ink); }
-
-    /* PHOTOGRAPHY */
-    .photo-section { background: var(--white); }
-    .photo-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-top: 40px;
-    }
-    .photo-placeholder {
-      aspect-ratio: 1;
-      background: var(--light);
-      border: 1px dashed var(--warm);
-      display: flex;
-      flex-direction: column;
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
+      gap: 8px;
+      margin-top: 16px;
       font-size: 12px;
-      color: var(--muted);
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      text-align: center;
-      gap: 8px;
-      padding: 16px;
+      color: var(--paper);
+      background: var(--ink);
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
     }
-    .photo-placeholder .photo-label-cat {
-      font-size: 16px;
-      font-style: italic;
-      text-transform: none;
-      letter-spacing: 0;
-      color: var(--accent);
+    .work-link:hover {
+      background: var(--accent);
+      transform: translateX(4px);
+      color: var(--paper);
+    }
+
+    /* PHOTOGRAPHY CAROUSEL */
+    .photo-section { background: var(--white); }
+    .filter-tabs {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 32px;
+      border-bottom: 1px solid var(--light);
+      padding-bottom: 8px;
+    }
+    .filter-tab {
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+      padding-bottom: 8px;
+      position: relative;
+      transition: color 0.3s;
+    }
+    .filter-tab.active {
+      color: var(--ink);
+    }
+    .filter-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent);
+    }
+    .carousel-container {
+      position: relative;
+      margin: 0 -32px;
+      padding: 0 32px;
+      overflow-x: auto;
+      display: flex;
+      gap: 20px;
+      scroll-behavior: smooth;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE/Edge */
+    }
+    .carousel-container::-webkit-scrollbar { display: none; }
+    
+    .photo-card {
+      flex: 0 0 400px;
+      aspect-ratio: 4/3;
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .photo-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .photo-card:hover img {
+      transform: scale(1.08);
+    }
+    .photo-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.7), transparent 60%);
+      display: flex;
+      align-items: flex-end;
+      padding: 24px;
+      color: white;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .photo-card:hover .photo-card-overlay {
+      opacity: 1;
+    }
+    .photo-card-info h4 {
+      font-size: 18px;
+      font-weight: 400;
+      margin-bottom: 4px;
+    }
+    .photo-card-info span {
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+
+    @media (max-width: 768px) {
+      .carousel-container { margin: 0 -24px; padding: 0 24px; }
+      .photo-card { flex: 0 0 300px; }
     }
 
     /* CONTACT */
@@ -394,8 +466,8 @@
           <p>In my mind, every problem in my way isn't a boulder in my path, but rather a stepping stone to success. When I struggled to understand something in school, I just worked harder. In Intro to Anatomy &amp; Physiology at the local high school, I found learning tough. But I worked hard and made it work, and I ended up getting A's in both semesters. Perseverance &mdash; even when I have no background experience on the subject &mdash; is a superpower of mine.</p>
           <p>Whatever I need to do, I will get done. I am extremely passionate about anything I do, and will work until whatever I do is as good as it can be.</p>
         </div>
-        <div class="fade-in">
-          <div class="about-image-placeholder">Your photo here</div>
+        <div class="about-image fade-in">
+          <img src="Images/Pictures Of Me/Flattering Photo/image.png" alt="Owen Santiago">
         </div>
       </div>
     </div>
@@ -413,6 +485,9 @@
         <div class="work-body">
           <h3>Medical Resume</h3>
           <p>Get to know my talents, and see what I can do for you. Updated January 2025.</p>
+          <div class="resume-embed" style="margin: 20px 0; border: 1px solid var(--light); border-radius: 4px; overflow: hidden;">
+            <iframe src="https://docs.google.com/document/d/e/2PACX-1vTJosaOCcGQtfZKeu8ftPAOWgxHxuj01utvhq0JLyMl2D2esvKDHmWja6Q5K7ikvJH970G--JR7x5oz/pub?embedded=true" style="width: 100%; height: 600px; border: none;"></iframe>
+          </div>
           <span class="work-tag">Healthcare</span>
           <span class="work-tag">Radiology</span>
         </div>
@@ -423,6 +498,7 @@
         <div class="work-body">
           <h3>First Place &mdash; Kitsap Bar Association's Law Day Competition</h3>
           <p>In 10th grade, I won $350 for writing an essay on democracy. Even around three years ago, I had extraordinary writing talent.</p>
+          <a class="work-link" href="PDF Files/Owen Santiago - Democracy Essay For Law Day - Submission Version.pdf" target="_blank">Read Essay &rarr;</a>
           <span class="work-tag">Writing</span>
           <span class="work-tag">Award Winner</span>
         </div>
@@ -433,6 +509,7 @@
         <div class="work-body">
           <h3>The Effects of ADHD on Human Pathology</h3>
           <p>Written for Intro to Anatomy &amp; Physiology, this project took months of research and proofreading. I was one of the few people in the class who turned in assignments on time &mdash; and I still got an A.</p>
+          <a class="work-link" href="PDF Files/The Effects of ADHD on Human Pathology - Final Draft.pdf" target="_blank">Read Paper &rarr;</a>
           <span class="work-tag">Research</span>
           <span class="work-tag">Anatomy</span>
         </div>
@@ -447,15 +524,6 @@
           <span class="work-tag">Editorial</span>
         </div>
       </div>
-
-      <div class="work-card fade-in">
-        <div class="work-label">Video</div>
-        <div class="work-body">
-          <h3>YouTube Channel</h3>
-          <p>Photography. Technology. AI. All the interesting geeky nerd techy stuff &mdash; I'm here for it.</p>
-          <a class="work-link" href="https://www.youtube.com/@adhdboy411/featured" target="_blank" rel="noopener">Visit Channel &rarr;</a>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -465,18 +533,59 @@
       <p class="section-label fade-in">Photography</p>
       <h2 class="section-title fade-in">Every Story Deserves a Frame</h2>
       <p class="works-intro fade-in">An avid photographer, I love capturing anything in the moment. Everything has a story, and a great photo can tell it.</p>
-      <div class="photo-grid fade-in">
-        <div class="photo-placeholder">
-          <span class="photo-label-cat">People</span>
-          <span>Your photo here</span>
+      
+      <div class="filter-tabs fade-in">
+        <div class="filter-tab active" onclick="filterPhotos('all')">All</div>
+        <div class="filter-tab" onclick="filterPhotos('people')">People</div>
+        <div class="filter-tab" onclick="filterPhotos('nature')">Nature</div>
+        <div class="filter-tab" onclick="filterPhotos('objects')">Life & Objects</div>
+      </div>
+
+      <div class="carousel-container fade-in" id="photo-carousel">
+        <!-- People -->
+        <div class="photo-card" data-theme="people">
+          <img src="Images/DSC09026.JPG" alt="People">
+          <div class="photo-card-overlay"><div class="photo-card-info"><h4>Connections</h4><span>People</span></div></div>
         </div>
-        <div class="photo-placeholder">
-          <span class="photo-label-cat">Nature</span>
-          <span>Your photo here</span>
+        <div class="photo-card" data-theme="people">
+          <img src="Images/DSC09025.JPG" alt="People">
+          <div class="photo-card-overlay"><div class="photo-card-info"><h4>Moments</h4><span>People</span></div></div>
         </div>
-        <div class="photo-placeholder">
-          <span class="photo-label-cat">Objects</span>
-          <span>Your photo here</span>
+        <div class="photo-card" data-theme="people">
+          <img src="Images/DSC09023.JPG" alt="People">
+          <div class="photo-card-overlay"><div class="photo-card-info"><h4>The Journey</h4><span>People</span></div></div>
+        </div>
+
+        <!-- Nature -->
+        <div class="photo-card" data-theme="nature">
+          <img src="Images/DSC08975.JPG" alt="Nature">
+          <div class="photo-card-overlay"><div class="photo-card-info"><h4>Deep Woods</h4><span>Nature</span></div></div>
+        </div>
+        <div class="photo-card" data-theme="nature">
+          <img src="Images/DSC09220~2.JPG" alt="Nature">
+          <div class="photo-card-overlay"><div class="photo-card-info"><h4>Golden Hour</h4><span>Nature</span></div></div>
+        </div>
+        <div class="photo-card" data-theme="nature">
+          <img src="Images/DSC09325.JPG" alt="Nature">
+          <div class="photo-card-overlay"><div class="photo-card-info"><h4>Pier View</h4><span>Nature</span></div></div>
+        </div>
+        <div class="photo-card" data-theme="nature">
+          <img src="Images/DSC08868.JPG" alt="Nature">
+          <div class="photo-card-overlay"><div class="photo-card-info"><h4>Coastal Breeze</h4><span>Nature</span></div></div>
+        </div>
+
+        <!-- Life & Objects -->
+        <div class="photo-card" data-theme="objects">
+          <img src="Images/DSC08946.JPG" alt="Objects">
+          <div class="photo-card-overlay"><div class="photo-card-info"><h4>Urban Pulse</h4><span>Life & Objects</span></div></div>
+        </div>
+        <div class="photo-card" data-theme="objects">
+          <img src="Images/DSC09222.JPG" alt="Objects">
+          <div class="photo-card-overlay"><div class="photo-card-info"><h4>Structure</h4><span>Life & Objects</span></div></div>
+        </div>
+        <div class="photo-card" data-theme="objects">
+          <img src="Images/DSC09294.JPG" alt="Objects">
+          <div class="photo-card-overlay"><div class="photo-card-info"><h4>Warnings</h4><span>Life & Objects</span></div></div>
         </div>
       </div>
     </div>
@@ -496,15 +605,40 @@
           <p class="contact-item-label">Phone</p>
           <span>+1 360-621-3726</span>
         </div>
-        <div class="contact-item">
-          <p class="contact-item-label">YouTube</p>
-          <a href="https://www.youtube.com/@adhdboy411" target="_blank" rel="noopener">@adhdboy411</a>
-        </div>
       </div>
     </div>
   </section>
 
   <script>
+    // Photo filtering
+    function filterPhotos(theme) {
+      const cards = document.querySelectorAll('.photo-card');
+      const tabs = document.querySelectorAll('.filter-tab');
+      
+      // Update tabs
+      tabs.forEach(tab => {
+        if (tab.innerText.toLowerCase().includes(theme)) {
+          tab.classList.add('active');
+        } else if (theme === 'all' && tab.innerText === 'All') {
+          tab.classList.add('active');
+        } else {
+          tab.classList.remove('active');
+        }
+      });
+
+      // Update cards
+      cards.forEach(card => {
+        if (theme === 'all' || card.dataset.theme === theme) {
+          card.style.display = 'block';
+          setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'scale(1)'; }, 10);
+        } else {
+          card.style.opacity = '0';
+          card.style.transform = 'scale(0.95)';
+          setTimeout(() => { card.style.display = 'none'; }, 300);
+        }
+      });
+    }
+
     // Nav shadow on scroll
     window.addEventListener('scroll', () => {
       document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
