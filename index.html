@@ -1,10 +1,15 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Owen Santiago</title>
+  <meta name="description"
+    content="Owen Santiago — aspiring Radiologic Technologist from Poulsbo, Washington. Portfolio of writing, research, photography, and design work.">
+  <meta property="og:title" content="Owen Santiago — Portfolio">
+  <meta property="og:description" content="Aspiring Radiologic Technologist. Writer, researcher, photographer.">
+  <meta property="og:type" content="website">
   <style>
     :root {
       --ink: #1a1a1a;
@@ -16,9 +21,15 @@
       --white: #faf8f4;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       font-family: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
@@ -28,10 +39,34 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    /* GRAIN OVERLAY */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0.028;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px;
+    }
+
+    /* SCROLL PROGRESS BAR */
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 200;
+      transition: width 0.1s linear;
+    }
+
     /* NAV */
     nav {
       position: fixed;
-      top: 0;
+      top: 2px;
       left: 0;
       right: 0;
       z-index: 100;
@@ -41,7 +76,11 @@
       border-bottom: 1px solid var(--light);
       transition: box-shadow 0.3s;
     }
-    nav.scrolled { box-shadow: 0 1px 8px rgba(0,0,0,0.06); }
+
+    nav.scrolled {
+      box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
+    }
+
     .nav-inner {
       max-width: 1100px;
       margin: 0 auto;
@@ -50,6 +89,7 @@
       align-items: center;
       justify-content: space-between;
     }
+
     .nav-name {
       font-size: 18px;
       letter-spacing: 0.08em;
@@ -58,16 +98,81 @@
       text-decoration: none;
       font-weight: 400;
     }
-    .nav-links { display: flex; gap: 32px; list-style: none; }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
     .nav-links a {
       text-decoration: none;
       color: var(--muted);
       font-size: 13px;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      transition: color 0.2s;
+      transition: color 0.3s;
+      position: relative;
     }
-    .nav-links a:hover { color: var(--ink); }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 1.5px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--ink);
+    }
+
+    .nav-links a:hover::after {
+      transform: scaleX(1);
+    }
+
+    .nav-links a.active {
+      color: var(--ink);
+    }
+
+    .nav-links a.active::after {
+      transform: scaleX(1);
+    }
+
+    /* HAMBURGER */
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      z-index: 110;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--ink);
+      margin: 5px 0;
+      transition: all 0.3s ease;
+    }
+
+    .nav-toggle.open span:nth-child(1) {
+      transform: rotate(45deg) translate(4px, 5px);
+    }
+
+    .nav-toggle.open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-toggle.open span:nth-child(3) {
+      transform: rotate(-45deg) translate(4px, -5px);
+    }
 
     /* HERO */
     .hero {
@@ -78,34 +183,239 @@
       text-align: center;
       padding: 120px 32px 80px;
       position: relative;
+      overflow: hidden;
     }
-    .hero-content { max-width: 700px; }
+
+    /* Cursor-reactive radial glow */
+    .hero-glow {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(600px circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(200, 184, 154, 0.12), transparent 60%);
+      transition: background 0.3s ease;
+    }
+
+    /* Decorative corner accents */
+    .hero-corner {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-color: var(--warm);
+      border-style: solid;
+      opacity: 0.3;
+    }
+
+    .hero-corner.tl {
+      top: 40px;
+      left: 40px;
+      border-width: 1px 0 0 1px;
+    }
+
+    .hero-corner.tr {
+      top: 40px;
+      right: 40px;
+      border-width: 1px 1px 0 0;
+    }
+
+    .hero-corner.bl {
+      bottom: 40px;
+      left: 40px;
+      border-width: 0 0 1px 1px;
+    }
+
+    .hero-corner.br {
+      bottom: 40px;
+      right: 40px;
+      border-width: 0 1px 1px 0;
+    }
+
+    .hero-content {
+      max-width: 700px;
+      position: relative;
+      z-index: 2;
+    }
+
     .hero-greeting {
       font-size: 15px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--muted);
       margin-bottom: 20px;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: heroFadeUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s forwards;
+      position: relative;
+      display: inline-block;
     }
+
+    /* HELLO GREETER */
+    .hello-greeter {
+      position: absolute;
+      right: -38px;
+      top: -10px;
+      width: 32px;
+      height: 44px;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .hello-greeter.pop-in {
+      animation: greeterPop 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    @keyframes greeterPop {
+      0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.5);
+      }
+
+      60% {
+        opacity: 1;
+        transform: translateY(-6px) scale(1.1);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .hello-greeter.pop-out {
+      animation: greeterBye 0.4s cubic-bezier(0.4, 0, 1, 1) forwards;
+    }
+
+    @keyframes greeterBye {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.6);
+      }
+    }
+
+    .greeter-wave-arm {
+      transform-origin: 16px 28px;
+    }
+
+    .greeter-wave-arm.waving {
+      animation: bigWave 0.4s ease-in-out 6 alternate;
+    }
+
+    @keyframes bigWave {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(-40deg);
+      }
+    }
+
     .hero h1 {
-      font-size: clamp(40px, 7vw, 72px);
+      font-size: clamp(44px, 7.5vw, 80px);
       font-weight: 400;
-      line-height: 1.1;
+      line-height: 1.08;
       margin-bottom: 28px;
       letter-spacing: -0.02em;
     }
+
+    /* Staggered letter entrance */
+    .hero-letter {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(40px) rotate(4deg);
+      animation: letterIn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    @keyframes letterIn {
+      to {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg);
+      }
+    }
+
+    /* SMILEY FACE LETTERS */
+    .face-letter {
+      position: relative;
+      display: inline-block;
+    }
+
+    .letter-text {
+      position: relative;
+      z-index: 1;
+    }
+
+    .face-svg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    .face-hand {
+      transform-origin: 34px 18px;
+      opacity: 0;
+    }
+
+    .face-hand.waving {
+      opacity: 1;
+      animation: wave 0.6s ease-in-out 4 alternate;
+    }
+
+    @keyframes wave {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(-30deg);
+      }
+    }
+
+    .blink-lid {
+      transition: opacity 0.06s ease;
+    }
+
+    .blink-lid.blinking {
+      opacity: 1;
+    }
+
     .hero-sub {
       font-size: 18px;
       color: var(--muted);
       font-style: italic;
-      margin-bottom: 40px;
+      margin-bottom: 44px;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: heroFadeUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 1.1s forwards;
     }
+
     .hero-cta {
       display: inline-flex;
       gap: 16px;
       flex-wrap: wrap;
       justify-content: center;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: heroFadeUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 1.3s forwards;
     }
+
+    @keyframes heroFadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .hero-cta a {
       padding: 14px 32px;
       font-size: 13px;
@@ -115,45 +425,91 @@
       border: 1px solid var(--ink);
       color: var(--ink);
       transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-      position: relative;
-      overflow: hidden;
       border-radius: 4px;
     }
+
     .hero-cta a:hover {
       background: var(--ink);
       color: var(--paper);
       transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     }
+
     .hero-cta a.filled {
       background: var(--ink);
       color: var(--paper);
     }
+
     .hero-cta a.filled:hover {
       background: var(--accent);
       border-color: var(--accent);
       transform: translateY(-3px);
       box-shadow: 0 8px 20px rgba(139, 111, 71, 0.2);
     }
+
     .scroll-hint {
       position: absolute;
       bottom: 40px;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 12px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
+      font-size: 20px;
       color: var(--warm);
       animation: float 2.5s ease-in-out infinite;
+      opacity: 0;
+      animation: float 2.5s ease-in-out infinite, heroFadeUp 0.6s 1.8s forwards;
     }
+
     @keyframes float {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50% { transform: translateX(-50%) translateY(8px); }
+
+      0%,
+      100% {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      50% {
+        transform: translateX(-50%) translateY(8px);
+      }
+    }
+
+    /* SECTION DIVIDERS */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 0;
+      height: 0;
+      position: relative;
+      z-index: 2;
+    }
+
+    .section-divider::before,
+    .section-divider::after {
+      content: '';
+      width: 60px;
+      height: 1px;
+      background: var(--warm);
+      opacity: 0.4;
+    }
+
+    .section-divider-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--warm);
+      border-radius: 50%;
+      opacity: 0.5;
     }
 
     /* SECTIONS */
-    section { padding: 100px 32px; }
-    .section-inner { max-width: 900px; margin: 0 auto; }
+    section {
+      padding: 100px 32px;
+    }
+
+    .section-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
     .section-label {
       font-size: 12px;
       letter-spacing: 0.25em;
@@ -161,46 +517,49 @@
       color: var(--warm);
       margin-bottom: 12px;
     }
+
     .section-title {
       font-size: clamp(28px, 4vw, 42px);
       font-weight: 400;
       line-height: 1.2;
       margin-bottom: 32px;
     }
-    .divider {
-      width: 48px;
-      height: 1px;
-      background: var(--warm);
-      margin: 40px 0;
-    }
 
     /* ABOUT */
-    .about { background: var(--white); }
+    .about {
+      background: var(--white);
+    }
+
     .about-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 60px;
       align-items: start;
     }
+
     .about-text p {
       margin-bottom: 20px;
       font-size: 16px;
       color: #3a3530;
     }
-    .about-text p:first-child::first-line {
+
+    .about-text p:first-of-type::first-line {
       font-variant: small-caps;
       letter-spacing: 0.04em;
     }
+
     .about-image {
       position: relative;
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-      transition: transform 0.4s ease;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
+
     .about-image:hover {
       transform: translateY(-8px);
     }
+
     .about-image img {
       display: block;
       width: 100%;
@@ -210,8 +569,21 @@
       background: var(--light);
     }
 
+    /* Image decorative frame */
+    .about-image::after {
+      content: '';
+      position: absolute;
+      inset: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 6px;
+      pointer-events: none;
+    }
+
     /* WORKS */
-    .works { background: var(--paper); }
+    .works {
+      background: var(--paper);
+    }
+
     .works-intro {
       font-size: 18px;
       color: var(--muted);
@@ -219,15 +591,28 @@
       margin-bottom: 60px;
       font-style: italic;
     }
+
     .work-card {
       display: grid;
       grid-template-columns: 200px 1fr;
       gap: 40px;
       padding: 40px 0;
+      padding-left: 20px;
       border-top: 1px solid var(--light);
+      border-left: 3px solid transparent;
       align-items: start;
+      transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
-    .work-card:last-child { border-bottom: 1px solid var(--light); }
+
+    .work-card:last-child {
+      border-bottom: 1px solid var(--light);
+    }
+
+    .work-card:hover {
+      border-left-color: var(--accent);
+      background: rgba(200, 184, 154, 0.04);
+    }
+
     .work-label {
       font-size: 12px;
       letter-spacing: 0.15em;
@@ -235,17 +620,21 @@
       color: var(--warm);
       padding-top: 4px;
     }
+
     .work-body h3 {
       font-size: 22px;
       font-weight: 400;
       margin-bottom: 12px;
       line-height: 1.3;
     }
+
     .work-body p {
       font-size: 15px;
       color: #5a5550;
       margin-bottom: 12px;
+      line-height: 1.7;
     }
+
     .work-tag {
       display: inline-block;
       font-size: 11px;
@@ -256,7 +645,16 @@
       padding: 4px 12px;
       margin-right: 8px;
       margin-top: 8px;
+      transition: all 0.3s ease;
+      border-radius: 2px;
     }
+
+    .work-tag:hover {
+      background: var(--accent);
+      color: var(--white);
+      border-color: var(--accent);
+    }
+
     .work-link {
       display: inline-flex;
       align-items: center;
@@ -272,14 +670,33 @@
       border-radius: 4px;
       transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
+
     .work-link:hover {
       background: var(--accent);
       transform: translateX(6px);
       box-shadow: 0 6px 16px rgba(139, 111, 71, 0.2);
     }
 
+    /* RESUME EMBED */
+    .resume-embed {
+      margin: 20px 0;
+      border: 1px solid var(--light);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .resume-embed iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
+
     /* PHOTOGRAPHY CAROUSEL */
-    .photo-section { background: var(--white); }
+    .photo-section {
+      background: var(--white);
+    }
+
     .filter-tabs {
       display: flex;
       gap: 24px;
@@ -287,6 +704,7 @@
       border-bottom: 1px solid var(--light);
       padding-bottom: 8px;
     }
+
     .filter-tab {
       font-size: 13px;
       letter-spacing: 0.1em;
@@ -296,10 +714,17 @@
       padding-bottom: 8px;
       position: relative;
       transition: color 0.3s;
+      user-select: none;
     }
+
+    .filter-tab:hover {
+      color: var(--ink);
+    }
+
     .filter-tab.active {
       color: var(--ink);
     }
+
     .filter-tab.active::after {
       content: '';
       position: absolute;
@@ -309,6 +734,11 @@
       height: 2px;
       background: var(--accent);
     }
+
+    .carousel-wrapper {
+      position: relative;
+    }
+
     .carousel-container {
       position: relative;
       margin: 0 -32px;
@@ -317,34 +747,175 @@
       display: flex;
       gap: 20px;
       scroll-behavior: smooth;
-      scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none; /* IE/Edge */
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
-    .carousel-container::-webkit-scrollbar { display: none; }
-    
+
+    .carousel-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .carousel-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(245, 241, 235, 0.95);
+      border: 1px solid var(--light);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .carousel-arrow:hover {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .carousel-arrow svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .carousel-arrow.prev {
+      left: 8px;
+    }
+
+    .carousel-arrow.next {
+      right: 8px;
+    }
+
     .photo-card {
       flex: 0 0 400px;
       aspect-ratio: 4/3;
       position: relative;
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+      cursor: pointer;
     }
+
+    /* LIGHTBOX */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      background: rgba(0, 0, 0, 0.92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      cursor: zoom-out;
+    }
+
+    .lightbox.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .lightbox img {
+      max-width: 92vw;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 6px;
+      transform: scale(0.9);
+      transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .lightbox.active img {
+      transform: scale(1);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 24px;
+      right: 28px;
+      width: 40px;
+      height: 40px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox-close svg {
+      width: 24px;
+      height: 24px;
+      stroke: rgba(255, 255, 255, 0.7);
+      stroke-width: 2;
+      stroke-linecap: round;
+      transition: stroke 0.2s;
+    }
+
+    .lightbox-close:hover svg {
+      stroke: #fff;
+    }
+
+    .photo-card.hidden {
+      display: none;
+    }
+
     .photo-card img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       transition: transform 0.6s ease;
     }
+
+    .photo-card:hover {
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.16);
+      transform: translateY(-6px);
+    }
+
     .photo-card:hover img {
       transform: scale(1.08);
     }
 
+    .photo-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent 60%);
+      display: flex;
+      align-items: flex-end;
+      padding: 24px;
+      color: white;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
 
-    @media (max-width: 768px) {
-      .carousel-container { margin: 0 -24px; padding: 0 24px; }
-      .photo-card { flex: 0 0 300px; }
+    .photo-card-overlay {
+      display: none;
+    }
+
+    .photo-card-info h4 {
+      font-size: 18px;
+      font-weight: 400;
+      margin-bottom: 4px;
+    }
+
+    .photo-card-info span {
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.8;
     }
 
     /* CONTACT */
@@ -352,10 +923,18 @@
       background: var(--ink);
       color: var(--paper);
       text-align: center;
-      padding-bottom: 120px;
+      padding-bottom: 80px;
+      position: relative;
     }
-    .contact .section-label { color: var(--warm); }
-    .contact .section-title { color: var(--paper); }
+
+    .contact .section-label {
+      color: var(--warm);
+    }
+
+    .contact .section-title {
+      color: var(--paper);
+    }
+
     .contact-methods {
       display: flex;
       justify-content: center;
@@ -363,9 +942,11 @@
       margin-top: 40px;
       flex-wrap: wrap;
     }
+
     .contact-item {
       text-align: center;
     }
+
     .contact-item-label {
       font-size: 11px;
       letter-spacing: 0.2em;
@@ -373,20 +954,58 @@
       color: var(--warm);
       margin-bottom: 8px;
     }
-    .contact-item a, .contact-item span {
+
+    .contact-item a,
+    .contact-item span {
       color: var(--paper);
       text-decoration: none;
       font-size: 16px;
       transition: color 0.2s;
+      position: relative;
     }
-    .contact-item a:hover { color: var(--warm); }
+
+    .contact-item a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--warm);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .contact-item a:hover {
+      color: var(--warm);
+    }
+
+    .contact-item a:hover::after {
+      transform: scaleX(1);
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--ink);
+      border-top: 1px solid rgba(200, 184, 154, 0.15);
+      padding: 24px 32px 76px;
+      text-align: center;
+    }
+
+    footer p {
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(200, 184, 154, 0.4);
+    }
 
     /* FADE IN */
     .fade-in {
       opacity: 0;
       transform: translateY(30px);
-      transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+      transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
+
     .fade-in.visible {
       opacity: 1;
       transform: translateY(0);
@@ -394,91 +1013,151 @@
 
     /* MOBILE */
     @media (max-width: 768px) {
-      .about-grid { grid-template-columns: 1fr; gap: 40px; }
-      .work-card { grid-template-columns: 1fr; gap: 12px; }
-      .photo-grid { grid-template-columns: 1fr 1fr; }
-      .nav-inner { padding: 14px 20px; }
-      .nav-links { gap: 20px; }
-      .nav-links a { font-size: 12px; }
-      section { padding: 72px 24px; }
-      .contact-methods { gap: 36px; }
+      .nav-toggle {
+        display: block;
+      }
+
+      .nav-links {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(245, 241, 235, 0.98);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 36px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+
+      .nav-links.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .nav-links a {
+        font-size: 16px;
+        letter-spacing: 0.15em;
+      }
+
+      .about-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .about-image img {
+        height: 400px;
+      }
+
+      .work-card {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding-left: 16px;
+      }
+
+      .nav-inner {
+        padding: 14px 20px;
+      }
+
+      section {
+        padding: 72px 24px;
+      }
+
+      .contact-methods {
+        gap: 36px;
+      }
+
+      .carousel-container {
+        margin: 0 -24px;
+        padding: 0 24px;
+      }
+
+      .photo-card {
+        flex: 0 0 300px;
+      }
+
+      .carousel-arrow {
+        display: none;
+      }
+
+      .resume-embed iframe {
+        height: 400px;
+      }
+
+      .hero-corner {
+        width: 40px;
+        height: 40px;
+      }
+
+      .hero-corner.tl {
+        top: 20px;
+        left: 20px;
+      }
+
+      .hero-corner.tr {
+        top: 20px;
+        right: 20px;
+      }
+
+      .hero-corner.bl {
+        bottom: 20px;
+        left: 20px;
+      }
+
+      .hero-corner.br {
+        bottom: 20px;
+        right: 20px;
+      }
     }
+
     @media (max-width: 480px) {
-      .photo-grid { grid-template-columns: 1fr; }
-      .hero-cta { flex-direction: column; align-items: center; }
-    }
+      .hero-cta {
+        flex-direction: column;
+        align-items: center;
+      }
 
-    /* FUN LETTERS */
-    .fun-letter { position: relative; display: inline-block; }
-    
-    .face {
-      position: absolute;
-      top: 0.1em;
-      right: -0.05em;
-      width: 0.18em;
-      height: 0.18em;
-      background: var(--ink);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 10;
-      display: flex;
-      align-items: center;
-    }
-    
-    .eyes-container {
-      display: flex;
-      justify-content: space-between;
-      width: 50%;
-      margin: 0 auto;
-      transform: translateY(-10%); /* Look slightly up default */
-    }
-
-    .eye {
-      width: 35%;
-      aspect-ratio: 1;
-      background: var(--paper);
-      border-radius: 50%;
-      animation: blink 4s infinite;
-    }
-    
-    @keyframes blink {
-      0%, 96%, 98%, 100% { transform: scaleY(1); }
-      97%, 99% { transform: scaleY(0.1); }
-    }
-    
-    /* Playful character bounce */
-    .fun-letter.waving .face {
-      animation: face-jump 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) infinite alternate;
-    }
-    @keyframes face-jump {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-0.15em) scale(1.1); }
+      .about-image img {
+        height: 320px;
+      }
     }
   </style>
 </head>
+
 <body>
+
+  <div class="scroll-progress" id="scrollProgress"></div>
 
   <nav id="nav">
     <div class="nav-inner">
       <a class="nav-name" href="#hero">Owen Santiago</a>
-      <ul class="nav-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#works">Works</a></li>
-        <li><a href="#photos">Photos</a></li>
-        <li><a href="#contact">Contact</a></li>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about" data-section="about">About</a></li>
+        <li><a href="#works" data-section="works">Works</a></li>
+        <li><a href="#photos" data-section="photos">Photos</a></li>
+        <li><a href="#contact" data-section="contact">Contact</a></li>
       </ul>
     </div>
   </nav>
 
   <!-- HERO -->
   <section class="hero" id="hero">
-    <div class="hero-content fade-in">
+    <div class="hero-glow" id="heroGlow"></div>
+    <div class="hero-corner tl"></div>
+    <div class="hero-corner tr"></div>
+    <div class="hero-corner bl"></div>
+    <div class="hero-corner br"></div>
+    <div class="hero-content">
       <p class="hero-greeting">Hello, I'm</p>
-      <h1>
-        <span class="fun-letter" data-letter="O">O<div class="face"><div class="eyes-container"><div class="eye"></div><div class="eye"></div></div></div></span>w<span class="fun-letter" data-letter="e">e<div class="face"><div class="eyes-container"><div class="eye"></div><div class="eye"></div></div></div></span>n<br>
-        S<span class="fun-letter" data-letter="a">a<div class="face"><div class="eyes-container"><div class="eye"></div><div class="eye"></div></div></div></span>nti<span class="fun-letter" data-letter="a">a<div class="face"><div class="eyes-container"><div class="eye"></div><div class="eye"></div></div></div></span><span class="fun-letter" data-letter="g">g<div class="face"><div class="eyes-container"><div class="eye"></div><div class="eye"></div></div></div></span><span class="fun-letter" data-letter="o">o<div class="face"><div class="eyes-container"><div class="eye"></div><div class="eye"></div></div></div></span>
-      </h1>
-      <p class="hero-sub">Aspiring Radiologic Technician from Poulsbo, Washington</p>
+      <h1 class="name-h1" id="heroName"></h1>
+      <p class="hero-sub">Aspiring Radiologic Technologist from Poulsbo, Washington</p>
       <div class="hero-cta">
         <a href="#works" class="filled">View My Work</a>
         <a href="#contact">Get in Touch</a>
@@ -487,6 +1166,10 @@
     <span class="scroll-hint">&darr;</span>
   </section>
 
+  <div class="section-divider">
+    <div class="section-divider-dot"></div>
+  </div>
+
   <!-- ABOUT -->
   <section class="about" id="about">
     <div class="section-inner">
@@ -494,33 +1177,48 @@
         <div class="about-text fade-in">
           <p class="section-label">About</p>
           <h2 class="section-title">An Energetic Mind,<br>A Focused Purpose.</h2>
-          <p>I am an aspiring Radiologic Technologist driven by a deep commitment to patient-centered care and technical excellence. Growing up as a Filipino-American with parents from diverse backgrounds, I learned early on the profound value of bias-free compassion and treating every individual with respect. These values form the foundation of how I intend to care for my patients.</p>
+          <p>I am an aspiring Radiologic Technologist driven by a deep commitment to patient-centered care and technical
+            excellence. Growing up as a Filipino-American with parents from diverse backgrounds, I learned early on the
+            value of treating every individual with respect and compassion&mdash;values that will shape how I care for
+            my patients.</p>
 
-          <p>My journey hasn't been without challenges, but I view obstacles as stepping stones. Living with ADHD has uniquely honed my ability to notice critical details that others might miss&mdash;a vital skill when it comes to precise image evaluation and problem-solving in clinical settings. In demanding courses like Anatomy &amp; Physiology, I combined this natural attention to detail with an unrelenting work ethic, securing top grades through pure perseverance.</p>
+          <p>Living with ADHD has sharpened my ability to notice details others might miss&mdash;a critical skill for
+            precise image evaluation and clinical problem-solving. In demanding courses like Anatomy &amp; Physiology, I
+            combined that attention to detail with relentless effort and earned top grades through perseverance alone.
+          </p>
 
-          <p>Whether it's ensuring safety protocols are meticulously followed, communicating clearly with patients to ease their anxiety, or continuously refining my technical skills, I am dedicated to professionalism. Whatever the task requires, I will see it through with integrity and passion.</p>
+          <p>Whether it's ensuring safety protocols are followed, communicating clearly with patients, or refining my
+            technical skills, I bring the same standard to everything I do: get it done right, every time.</p>
         </div>
         <div class="about-image fade-in">
-          <img src="Images/Pictures Of Me/Flattering Photo/image.png" alt="Owen Santiago">
+          <img src="https://owensantiago411.github.io/Images/Pictures%20Of%20Me/Flattering%20Photo/image.jpeg"
+            alt="Owen Santiago">
         </div>
       </div>
     </div>
   </section>
+
+  <div class="section-divider">
+    <div class="section-divider-dot"></div>
+  </div>
 
   <!-- WORKS -->
   <section class="works" id="works">
     <div class="section-inner">
       <p class="section-label fade-in">Works</p>
       <h2 class="section-title fade-in">A Jack-of-All-Trades</h2>
-      <p class="works-intro fade-in">Writing, argumentation, academic research, product ideation, photography, graphic design, and technical know-how. The best part? I love doing it.</p>
+      <p class="works-intro fade-in">Writing, research, product ideation, photography, graphic design, and technical
+        know-how. The best part? I love doing it.</p>
 
       <div class="work-card fade-in">
         <div class="work-label">Resume</div>
         <div class="work-body">
           <h3>Medical Resume</h3>
-          <p>Get to know my talents, and see what I can do for you. Updated January 2025.</p>
-          <div class="resume-embed" style="margin: 20px 0; border: 1px solid var(--light); border-radius: 4px; overflow: hidden;">
-            <iframe src="https://docs.google.com/document/d/e/2PACX-1vTJosaOCcGQtfZKeu8ftPAOWgxHxuj01utvhq0JLyMl2D2esvKDHmWja6Q5K7ikvJH970G--JR7x5oz/pub?embedded=true" style="width: 100%; height: 600px; border: none;"></iframe>
+          <p>A summary of my clinical interests, coursework, and experience in healthcare.</p>
+          <div class="resume-embed">
+            <iframe
+              src="https://docs.google.com/document/d/e/2PACX-1vTJosaOCcGQtfZKeu8ftPAOWgxHxuj01utvhq0JLyMl2D2esvKDHmWja6Q5K7ikvJH970G--JR7x5oz/pub?embedded=true"
+              loading="lazy"></iframe>
           </div>
           <span class="work-tag">Healthcare</span>
           <span class="work-tag">Radiology</span>
@@ -531,8 +1229,10 @@
         <div class="work-label">Essay &middot; 2023</div>
         <div class="work-body">
           <h3>First Place &mdash; Kitsap Bar Association's Law Day Competition</h3>
-          <p>In 10th grade, I won $350 for writing an essay on democracy. Even around three years ago, I had extraordinary writing talent.</p>
-          <a class="work-link" href="PDF Files/Owen Santiago - Democracy Essay For Law Day - Submission Version.pdf" target="_blank">Read Essay &rarr;</a>
+          <p>A winning essay on democracy, written in 10th grade and awarded $350 by the Kitsap Bar Association.</p>
+          <a class="work-link"
+            href="https://owensantiago411.github.io/PDF%20Files/Owen%20Santiago%20-%20Democracy%20Essay%20For%20Law%20Day%20-%20Submission%20Version.pdf"
+            target="_blank" rel="noopener">Read Essay &rarr;</a>
           <span class="work-tag">Writing</span>
           <span class="work-tag">Award Winner</span>
         </div>
@@ -542,8 +1242,11 @@
         <div class="work-label">Research Paper</div>
         <div class="work-body">
           <h3>The Effects of ADHD on Human Pathology</h3>
-          <p>Written for Intro to Anatomy &amp; Physiology, this project took months of research and proofreading. I was one of the few people in the class who turned in assignments on time &mdash; and I still got an A.</p>
-          <a class="work-link" href="PDF Files/The Effects of ADHD on Human Pathology - Final Draft.pdf" target="_blank">Read Paper &rarr;</a>
+          <p>A research paper written for Intro to Anatomy &amp; Physiology, drawing on months of research into how ADHD
+            affects physiological systems.</p>
+          <a class="work-link"
+            href="https://owensantiago411.github.io/PDF%20Files/The%20Effects%20of%20ADHD%20on%20Human%20Pathology%20-%20Final%20Draft.pdf"
+            target="_blank" rel="noopener">Read Paper &rarr;</a>
           <span class="work-tag">Research</span>
           <span class="work-tag">Anatomy</span>
         </div>
@@ -553,7 +1256,7 @@
         <div class="work-label">Design &middot; 2023</div>
         <div class="work-body">
           <h3>North Kitsap High School Yearbook</h3>
-          <p>I have a strong love for design and writing, and nothing showcases it like this 2023 yearbook.</p>
+          <p>Layout design, editorial writing, and visual direction for the 2023 yearbook.</p>
           <span class="work-tag">Graphic Design</span>
           <span class="work-tag">Editorial</span>
         </div>
@@ -561,56 +1264,128 @@
     </div>
   </section>
 
+  <div class="section-divider">
+    <div class="section-divider-dot"></div>
+  </div>
+
   <!-- PHOTOGRAPHY -->
   <section class="photo-section" id="photos">
     <div class="section-inner">
       <p class="section-label fade-in">Photography</p>
       <h2 class="section-title fade-in">Every Story Deserves a Frame</h2>
-      <p class="works-intro fade-in">An avid photographer, I love capturing anything in the moment. Everything has a story, and a great photo can tell it.</p>
-      
+      <p class="works-intro fade-in">An avid photographer, I love capturing anything in the moment. Everything has a
+        story, and a great photo can tell it.</p>
+
       <div class="filter-tabs fade-in">
-        <div class="filter-tab active" onclick="filterPhotos('all')">All</div>
-        <div class="filter-tab" onclick="filterPhotos('people')">People</div>
-        <div class="filter-tab" onclick="filterPhotos('nature')">Nature</div>
-        <div class="filter-tab" onclick="filterPhotos('objects')">Life & Objects</div>
+        <div class="filter-tab active" data-filter="all">All</div>
+        <div class="filter-tab" data-filter="people">People</div>
+        <div class="filter-tab" data-filter="nature">Nature</div>
+        <div class="filter-tab" data-filter="objects">Life &amp; Objects</div>
       </div>
 
-      <div class="carousel-container fade-in" id="photo-carousel">
-        <!-- People -->
-        <div class="photo-card" data-theme="people">
-          <img src="Images/DSC09026.JPG" alt="People">
+      <div class="carousel-wrapper fade-in">
+        <button class="carousel-arrow prev" id="carouselPrev" aria-label="Previous photos">
+          <svg viewBox="0 0 24 24">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <div class="carousel-container" id="photo-carousel">
+          <div class="photo-card" data-theme="people">
+            <img src="https://owensantiago411.github.io/Images/DSC09026.JPG" alt="Connections — People photography"
+              loading="lazy">
+            <div class="photo-card-overlay">
+              <div class="photo-card-info">
+                <h4>Connections</h4><span>People</span>
+              </div>
+            </div>
+          </div>
+          <div class="photo-card" data-theme="people">
+            <img src="https://owensantiago411.github.io/Images/DSC09025.JPG" alt="Moments — People photography"
+              loading="lazy">
+            <div class="photo-card-overlay">
+              <div class="photo-card-info">
+                <h4>Moments</h4><span>People</span>
+              </div>
+            </div>
+          </div>
+          <div class="photo-card" data-theme="people">
+            <img src="https://owensantiago411.github.io/Images/DSC09023.JPG" alt="The Journey — People photography"
+              loading="lazy">
+            <div class="photo-card-overlay">
+              <div class="photo-card-info">
+                <h4>The Journey</h4><span>People</span>
+              </div>
+            </div>
+          </div>
+          <div class="photo-card" data-theme="nature">
+            <img src="https://owensantiago411.github.io/Images/DSC08975.JPG" alt="Deep Woods — Nature photography"
+              loading="lazy">
+            <div class="photo-card-overlay">
+              <div class="photo-card-info">
+                <h4>Deep Woods</h4><span>Nature</span>
+              </div>
+            </div>
+          </div>
+          <div class="photo-card" data-theme="nature">
+            <img src="https://owensantiago411.github.io/Images/DSC09220~2.JPG" alt="Golden Hour — Nature photography"
+              loading="lazy">
+            <div class="photo-card-overlay">
+              <div class="photo-card-info">
+                <h4>Golden Hour</h4><span>Nature</span>
+              </div>
+            </div>
+          </div>
+          <div class="photo-card" data-theme="nature">
+            <img src="https://owensantiago411.github.io/Images/DSC09325.JPG" alt="Pier View — Nature photography"
+              loading="lazy">
+            <div class="photo-card-overlay">
+              <div class="photo-card-info">
+                <h4>Pier View</h4><span>Nature</span>
+              </div>
+            </div>
+          </div>
+          <div class="photo-card" data-theme="nature">
+            <img src="https://owensantiago411.github.io/Images/DSC08868.JPG" alt="Coastal Breeze — Nature photography"
+              loading="lazy">
+            <div class="photo-card-overlay">
+              <div class="photo-card-info">
+                <h4>Coastal Breeze</h4><span>Nature</span>
+              </div>
+            </div>
+          </div>
+          <div class="photo-card" data-theme="objects">
+            <img src="https://owensantiago411.github.io/Images/DSC08946.JPG"
+              alt="Urban Pulse — Life and Objects photography" loading="lazy">
+            <div class="photo-card-overlay">
+              <div class="photo-card-info">
+                <h4>Urban Pulse</h4><span>Life &amp; Objects</span>
+              </div>
+            </div>
+          </div>
+          <div class="photo-card" data-theme="objects">
+            <img src="https://owensantiago411.github.io/Images/DSC09222.JPG"
+              alt="Structure — Life and Objects photography" loading="lazy">
+            <div class="photo-card-overlay">
+              <div class="photo-card-info">
+                <h4>Structure</h4><span>Life &amp; Objects</span>
+              </div>
+            </div>
+          </div>
+          <div class="photo-card" data-theme="objects">
+            <img src="https://owensantiago411.github.io/Images/DSC09294.JPG"
+              alt="Warnings — Life and Objects photography" loading="lazy">
+            <div class="photo-card-overlay">
+              <div class="photo-card-info">
+                <h4>Warnings</h4><span>Life &amp; Objects</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="photo-card" data-theme="people">
-          <img src="Images/DSC09025.JPG" alt="People">
-        </div>
-        <div class="photo-card" data-theme="people">
-          <img src="Images/DSC09023.JPG" alt="People">
-        </div>
-
-        <!-- Nature -->
-        <div class="photo-card" data-theme="nature">
-          <img src="Images/DSC08975.JPG" alt="Nature">
-        </div>
-        <div class="photo-card" data-theme="nature">
-          <img src="Images/DSC09220~2.JPG" alt="Nature">
-        </div>
-        <div class="photo-card" data-theme="nature">
-          <img src="Images/DSC09325.JPG" alt="Nature">
-        </div>
-        <div class="photo-card" data-theme="nature">
-          <img src="Images/DSC08868.JPG" alt="Nature">
-        </div>
-
-        <!-- Life & Objects -->
-        <div class="photo-card" data-theme="objects">
-          <img src="Images/DSC08946.JPG" alt="Objects">
-        </div>
-        <div class="photo-card" data-theme="objects">
-          <img src="Images/DSC09222.JPG" alt="Objects">
-        </div>
-        <div class="photo-card" data-theme="objects">
-          <img src="Images/DSC09294.JPG" alt="Objects">
-        </div>
+        <button class="carousel-arrow next" id="carouselNext" aria-label="Next photos">
+          <svg viewBox="0 0 24 24">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
       </div>
     </div>
   </section>
@@ -627,90 +1402,256 @@
         </div>
         <div class="contact-item">
           <p class="contact-item-label">Phone</p>
-          <span>+1 360-621-3726</span>
+          <a href="tel:+13606213726">+1 360-621-3726</a>
         </div>
       </div>
     </div>
   </section>
 
-  <script>
-    // Photo filtering
-    function filterPhotos(theme) {
-      const cards = document.querySelectorAll('.photo-card');
-      const tabs = document.querySelectorAll('.filter-tab');
-      
-      // Update tabs
-      tabs.forEach(tab => {
-        if (tab.innerText.toLowerCase().includes(theme)) {
-          tab.classList.add('active');
-        } else if (theme === 'all' && tab.innerText === 'All') {
-          tab.classList.add('active');
-        } else {
-          tab.classList.remove('active');
-        }
-      });
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" aria-label="Close"><svg viewBox="0 0 24 24">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg></button>
+    <img id="lightboxImg" src="" alt="">
+  </div>
 
-      // Update cards
-      cards.forEach(card => {
-        if (theme === 'all' || card.dataset.theme === theme) {
-          card.style.display = 'block';
-          setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'scale(1)'; }, 10);
-        } else {
-          card.style.opacity = '0';
-          card.style.transform = 'scale(0.95)';
-          setTimeout(() => { card.style.display = 'none'; }, 300);
-        }
-      });
+  <footer>
+    <p>&copy; 2026 Owen Santiago</p>
+  </footer>
+
+  <script>
+    // === HERO NAME WITH SMILEY FACES (built dynamically for stagger) ===
+    const nameLines = [
+      { text: 'Owen', faces: { 0: 'O' } },
+      { text: 'Santiago', faces: { 6: 'g', 7: 'o' } }
+    ];
+
+    function makeFaceSVG(letter) {
+      const isUpper = letter === 'O';
+      if (isUpper) {
+        return `<svg class="face-svg" viewBox="0 0 40 40"><g class="face-group"><g class="face-eyes"><circle class="eye-white" cx="14" cy="17" r="3.2" fill="var(--paper)"/><circle class="eye-white" cx="26" cy="17" r="3.2" fill="var(--paper)"/><circle class="pupil" cx="14" cy="17" r="1.6" fill="var(--ink)"/><circle class="pupil" cx="26" cy="17" r="1.6" fill="var(--ink)"/></g><path class="face-mouth" d="M13 25 Q20 30 27 25" stroke="var(--ink)" stroke-width="1.4" fill="none" stroke-linecap="round"/><g class="face-hand"><line x1="34" y1="18" x2="38" y2="12" stroke="var(--ink)" stroke-width="1.2" stroke-linecap="round"/><circle cx="38" cy="10" r="2.5" fill="var(--paper)" stroke="var(--ink)" stroke-width="1"/></g><rect class="blink-lid" x="10" y="13" width="20" height="7" fill="var(--paper)" opacity="0"/></g></svg>`;
+      }
+      const cy = letter === 'g' ? 16 : 20;
+      const mouthY = letter === 'g' ? 23 : 27;
+      const mouthY2 = letter === 'g' ? 27 : 31;
+      const lidY = letter === 'g' ? 12 : 16;
+      const lidH = 6;
+      const handY1 = letter === 'g' ? 16 : 20;
+      const handY2 = letter === 'g' ? 10 : 14;
+      const handCy = letter === 'g' ? 8 : 12;
+      return `<svg class="face-svg" viewBox="0 0 40 40"><g class="face-group"><g class="face-eyes"><circle class="eye-white" cx="15" cy="${cy}" r="2.6" fill="var(--paper)"/><circle class="eye-white" cx="25" cy="${cy}" r="2.6" fill="var(--paper)"/><circle class="pupil" cx="15" cy="${cy}" r="1.3" fill="var(--ink)"/><circle class="pupil" cx="25" cy="${cy}" r="1.3" fill="var(--ink)"/></g><path class="face-mouth" d="M14 ${mouthY} Q20 ${mouthY2} 26 ${mouthY}" stroke="var(--ink)" stroke-width="1.2" fill="none" stroke-linecap="round"/><g class="face-hand"><line x1="32" y1="${handY1}" x2="36" y2="${handY2}" stroke="var(--ink)" stroke-width="1" stroke-linecap="round"/><circle cx="36" cy="${handCy}" r="2" fill="var(--paper)" stroke="var(--ink)" stroke-width="0.8"/></g><rect class="blink-lid" x="12" y="${lidY}" width="16" height="${lidH}" fill="var(--paper)" opacity="0"/></g></svg>`;
     }
 
-    // Nav shadow on scroll
-    window.addEventListener('scroll', () => {
-      document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+    const heroName = document.getElementById('heroName');
+    let letterIndex = 0;
+    nameLines.forEach((line, lineIdx) => {
+      if (lineIdx > 0) heroName.appendChild(document.createElement('br'));
+      for (let i = 0; i < line.text.length; i++) {
+        const ch = line.text[i];
+        const isFace = line.faces.hasOwnProperty(i);
+        const wrapper = document.createElement('span');
+        wrapper.className = 'hero-letter';
+        wrapper.style.animationDelay = (0.35 + letterIndex * 0.055) + 's';
+
+        if (isFace) {
+          wrapper.classList.add('face-letter');
+          wrapper.setAttribute('data-face', '');
+          wrapper.innerHTML = `<span class="letter-text">${ch}</span>${makeFaceSVG(ch)}`;
+        } else {
+          wrapper.textContent = ch;
+        }
+        heroName.appendChild(wrapper);
+        letterIndex++;
+      }
     });
 
-    // Fade in on scroll (with stagger)
+    // === HERO GLOW (follows cursor) ===
+    const heroEl = document.querySelector('.hero');
+    const heroGlow = document.getElementById('heroGlow');
+    heroEl.addEventListener('mousemove', (e) => {
+      const rect = heroEl.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      heroGlow.style.setProperty('--glow-x', x + '%');
+      heroGlow.style.setProperty('--glow-y', y + '%');
+    });
+
+    // === SCROLL PROGRESS BAR ===
+    const scrollBar = document.getElementById('scrollProgress');
+    window.addEventListener('scroll', () => {
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = h > 0 ? (window.scrollY / h) * 100 : 0;
+      scrollBar.style.width = pct + '%';
+      document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+      updateActiveNav();
+    });
+
+    // === NAV ===
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    navToggle.addEventListener('click', () => {
+      navToggle.classList.toggle('open');
+      navLinks.classList.toggle('open');
+    });
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navToggle.classList.remove('open');
+        navLinks.classList.remove('open');
+      });
+    });
+
+    const sections = document.querySelectorAll('section[id]');
+    const navAnchors = document.querySelectorAll('.nav-links a[data-section]');
+    function updateActiveNav() {
+      const scrollY = window.scrollY + 120;
+      let currentId = '';
+      sections.forEach(s => { if (scrollY >= s.offsetTop) currentId = s.id; });
+      navAnchors.forEach(a => a.classList.toggle('active', a.dataset.section === currentId));
+    }
+
+    // === PHOTO FILTERING ===
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const theme = tab.dataset.filter;
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        document.querySelectorAll('.photo-card').forEach(card => {
+          card.classList.toggle('hidden', theme !== 'all' && card.dataset.theme !== theme);
+        });
+        document.getElementById('photo-carousel').scrollLeft = 0;
+      });
+    });
+
+    // === CAROUSEL ARROWS ===
+    const carousel = document.getElementById('photo-carousel');
+    document.getElementById('carouselPrev').addEventListener('click', () => {
+      carousel.scrollBy({ left: -420, behavior: 'smooth' });
+    });
+    document.getElementById('carouselNext').addEventListener('click', () => {
+      carousel.scrollBy({ left: 420, behavior: 'smooth' });
+    });
+
+    // === FADE IN ===
     const observer = new IntersectionObserver((entries) => {
-      let delayCounter = 0;
+      let delay = 0;
       entries.forEach(e => {
         if (e.isIntersecting) {
-          setTimeout(() => {
-            e.target.classList.add('visible');
-          }, delayCounter * 100);
-          delayCounter++;
+          setTimeout(() => e.target.classList.add('visible'), delay * 100);
+          delay++;
           observer.unobserve(e.target);
         }
       });
     }, { threshold: 0.15 });
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-    // Interactive Smiley Faces (Subtle eyes tracking)
+    // === SMILEY FACE LOGIC ===
+    const faceLetters = document.querySelectorAll('.face-letter[data-face]');
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+
     document.addEventListener('mousemove', (e) => {
-      const mouseX = e.clientX;
-      const mouseY = e.clientY;
-      
-      document.querySelectorAll('.eyes-container').forEach(eyes => {
-        const rect = eyes.parentElement.getBoundingClientRect(); // Get letter position
-        const letterX = rect.left + rect.width / 2;
-        const letterY = rect.top + rect.height / 2;
-        
-        const angle = Math.atan2(mouseY - letterY, mouseX - letterX);
-        const distance = Math.min(2.5, Math.hypot(mouseX - letterX, mouseY - letterY) / 150); // Very subtle movement
-        
-        const moveX = Math.cos(angle) * distance;
-        const moveY = Math.sin(angle) * distance;
-        
-        eyes.style.transform = `translate(${moveX}px, ${moveY}px)`;
-      });
+      mouseX = e.clientX;
+      mouseY = e.clientY;
     });
 
-    // Random waving (Letter tilt)
-    setInterval(() => {
-      const letters = document.querySelectorAll('.fun-letter');
-      if (letters.length === 0) return;
-      const randomLetter = letters[Math.floor(Math.random() * letters.length)];
-      randomLetter.classList.add('waving');
-      setTimeout(() => randomLetter.classList.remove('waving'), 1500);
-    }, 4500);
+    function updateEyes() {
+      faceLetters.forEach(fl => {
+        const pupils = fl.querySelectorAll('.pupil');
+        const eyeWhites = fl.querySelectorAll('.eye-white');
+        const rect = fl.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dx = mouseX - cx;
+        const dy = mouseY - cy;
+        const angle = Math.atan2(dy, dx);
+        const dist = Math.min(Math.hypot(dx, dy) / 80, 1);
+        pupils.forEach((p, i) => {
+          const w = eyeWhites[i];
+          const bx = parseFloat(w.getAttribute('cx'));
+          const by = parseFloat(w.getAttribute('cy'));
+          p.setAttribute('cx', bx + Math.cos(angle) * 1.4 * dist);
+          p.setAttribute('cy', by + Math.sin(angle) * 1.4 * dist);
+        });
+      });
+      requestAnimationFrame(updateEyes);
+    }
+    requestAnimationFrame(updateEyes);
+
+    function blink() {
+      // Each face blinks independently with staggered timing
+      faceLetters.forEach(fl => {
+        const delay = Math.random() * 600; // up to 600ms offset between faces
+        setTimeout(() => {
+          const lid = fl.querySelector('.blink-lid');
+          lid.classList.add('blinking');
+          setTimeout(() => lid.classList.remove('blinking'), 120);
+        }, delay);
+      });
+      setTimeout(blink, 2500 + Math.random() * 3500);
+    }
+    // Sometimes only 1-2 faces blink (wink effect)
+    function winkRandom() {
+      const idx = Math.floor(Math.random() * faceLetters.length);
+      const lid = faceLetters[idx].querySelector('.blink-lid');
+      lid.classList.add('blinking');
+      setTimeout(() => lid.classList.remove('blinking'), 150);
+      setTimeout(winkRandom, 3000 + Math.random() * 5000);
+    }
+    setTimeout(blink, 1500 + Math.random() * 2000);
+    setTimeout(winkRandom, 4000 + Math.random() * 3000);
+
+    // === LIGHTBOX ===
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    document.querySelectorAll('.photo-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const src = card.querySelector('img').src;
+        lightboxImg.src = src;
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    lightbox.addEventListener('click', closeLightbox);
+    lightboxImg.addEventListener('click', (e) => e.stopPropagation());
+    document.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('active')) closeLightbox();
+    });
+
+    function triggerWave() {
+      const hand = faceLetters[Math.floor(Math.random() * faceLetters.length)].querySelector('.face-hand');
+      hand.classList.add('waving');
+      hand.addEventListener('animationend', () => hand.classList.remove('waving'), { once: true });
+      setTimeout(() => hand.classList.remove('waving'), 5500);
+      setTimeout(triggerWave, 4000 + Math.random() * 4000);
+    }
+    setTimeout(triggerWave, 3000 + Math.random() * 3000);
+
+    // === HELLO GREETER (pops out on page load, waves, then leaves) ===
+    const greeter = document.getElementById('helloGreeter');
+    setTimeout(() => {
+      greeter.classList.add('pop-in');
+      // Start waving after pop-in finishes
+      setTimeout(() => {
+        const arm = greeter.querySelector('.greeter-wave-arm');
+        arm.classList.add('waving');
+        // After waving, pop out
+        arm.addEventListener('animationend', () => {
+          arm.classList.remove('waving');
+          setTimeout(() => {
+            greeter.classList.remove('pop-in');
+            greeter.classList.add('pop-out');
+          }, 300);
+        }, { once: true });
+      }, 550);
+    }, 700);
   </script>
 </body>
+
 </html>
