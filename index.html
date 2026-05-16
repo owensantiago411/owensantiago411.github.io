@@ -107,26 +107,33 @@
       justify-content: center;
     }
     .hero-cta a {
-      padding: 12px 28px;
+      padding: 14px 32px;
       font-size: 13px;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       text-decoration: none;
       border: 1px solid var(--ink);
       color: var(--ink);
-      transition: all 0.25s;
+      transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      border-radius: 4px;
     }
     .hero-cta a:hover {
       background: var(--ink);
       color: var(--paper);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
     }
     .hero-cta a.filled {
       background: var(--ink);
       color: var(--paper);
     }
     .hero-cta a.filled:hover {
-      background: transparent;
-      color: var(--ink);
+      background: var(--accent);
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(139, 111, 71, 0.2);
     }
     .scroll-hint {
       position: absolute;
@@ -253,22 +260,22 @@
     .work-link {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      margin-top: 16px;
-      font-size: 12px;
-      letter-spacing: 0.1em;
+      gap: 12px;
+      margin-top: 20px;
+      font-size: 13px;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--paper);
       background: var(--ink);
       text-decoration: none;
-      padding: 10px 20px;
+      padding: 12px 24px;
       border-radius: 4px;
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
     .work-link:hover {
       background: var(--accent);
-      transform: translateX(4px);
-      color: var(--paper);
+      transform: translateX(6px);
+      box-shadow: 0 6px 16px rgba(139, 111, 71, 0.2);
     }
 
     /* PHOTOGRAPHY CAROUSEL */
@@ -401,8 +408,8 @@
     /* FADE IN */
     .fade-in {
       opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
+      transform: translateY(30px);
+      transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
     .fade-in.visible {
       opacity: 1;
@@ -461,10 +468,11 @@
         <div class="about-text fade-in">
           <p class="section-label">About</p>
           <h2 class="section-title">An Energetic Mind,<br>A Focused Purpose.</h2>
-          <p>Despite the challenges of ADHD, I put everything I've got into my work. Because if work isn't done well, then what's the point?</p>
-          <p>I'm a Filipino-American with a white mother from the South and an immigrant father from the Philippines who lived most of his life in California. Despite childhood challenges on both sides, my parents have given me great opportunities that I will use to better the world via MRI.</p>
-          <p>In my mind, every problem in my way isn't a boulder in my path, but rather a stepping stone to success. When I struggled to understand something in school, I just worked harder. In Intro to Anatomy &amp; Physiology at the local high school, I found learning tough. But I worked hard and made it work, and I ended up getting A's in both semesters. Perseverance &mdash; even when I have no background experience on the subject &mdash; is a superpower of mine.</p>
-          <p>Whatever I need to do, I will get done. I am extremely passionate about anything I do, and will work until whatever I do is as good as it can be.</p>
+          <p>I am an aspiring Radiologic Technologist driven by a deep commitment to patient-centered care and technical excellence. Growing up as a Filipino-American with parents from diverse backgrounds, I learned early on the profound value of bias-free compassion and treating every individual with respect. These values form the foundation of how I intend to care for my patients.</p>
+
+          <p>My journey hasn't been without challenges, but I view obstacles as stepping stones. Living with ADHD has uniquely honed my ability to notice critical details that others might miss&mdash;a vital skill when it comes to precise image evaluation and problem-solving in clinical settings. In demanding courses like Anatomy &amp; Physiology, I combined this natural attention to detail with an unrelenting work ethic, securing top grades through pure perseverance.</p>
+
+          <p>Whether it's ensuring safety protocols are meticulously followed, communicating clearly with patients to ease their anxiety, or continuously refining my technical skills, I am dedicated to professionalism. Whatever the task requires, I will see it through with integrity and passion.</p>
         </div>
         <div class="about-image fade-in">
           <img src="Images/Pictures Of Me/Flattering Photo/image.png" alt="Owen Santiago">
@@ -644,11 +652,15 @@
       document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
     });
 
-    // Fade in on scroll
+    // Fade in on scroll (with stagger)
     const observer = new IntersectionObserver((entries) => {
+      let delayCounter = 0;
       entries.forEach(e => {
         if (e.isIntersecting) {
-          e.target.classList.add('visible');
+          setTimeout(() => {
+            e.target.classList.add('visible');
+          }, delayCounter * 100);
+          delayCounter++;
           observer.unobserve(e.target);
         }
       });
